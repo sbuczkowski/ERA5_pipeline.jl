@@ -1,0 +1,14 @@
+title = "Test TOML file"
+product_type = "monthly_average"
+grid = "0.25/0.25"
+format = "netcdf"
+
+[surface]
+database = "surface-database"
+variables = ["sea_surface_temperature", "sea_ice_cover", "total_cloud_cover"]
+
+[levels]
+database = "levels-database"
+variables = ["fraction_of_cloud_cover", "specific_humidity", "temperature"]
+levels = ["1", "2", "300", "450", "1000"]
+

@@ -1,0 +1,106 @@
+* Purpose
+Build CDSAPI queries to send to Copernicus system for retrieval of
+tailored datasets. This is slightly more than a port of the python
+scripts I have hacked together over the last several years. I am
+trying to rethink the needs and design and reduce complexity and code
+copying. Really, this isn't too hard in the high level view: decide on
+a dataset, build a query for the desired variables from that dataset,
+and send those to Copernicus via the retrieve command/method.
+
+* General design
+whether monthly averaged or hourly data queries from Copernicus, the
+cdsapi format is the same in either python or julia (CDSAPI.jl)
+versions of the API:
+
+CDSAPI.retrieve(<database>, <variable list>, <output file path>)
+
+in julia, <variable list> is a dictionary of keywords and variable
+names. For the monthly averaged queries, this dictionary is sufficient
+if it contains the following keys:
+ - format :: grib/netcdf
+ - product_type :: see below
+ - grid :: see below
+ - time :: see below
+ - year :: year of requested data
+ - month :: month of requested data
+ - variable :: array of variable names to query and output to <output
+   file path> in format specified by the 'format' key value
+ - pressure_level :: array of pressure levels (only needed for query
+   of non-surface values
+)
+
+** *NOTE*
+it /may/ be possible to make a completely generalized query with a
+default dictionary which contains all cdsapi keys but sets them to
+"missing" and then overwrites the missing value for keys needed by the
+specific query.
+
+** differences between hourly and monthly average queries
+the main difference between downloading the monthly average files and
+an ongoing download of hourly data (like ERA or ECMWF) is that the
+hourly data has to be requested in /packages/ to optimize tape search
+and download resources. Routines would then need to be written to
+break this packaged data apart and rebuild files for each day. Monthly
+average data is slightly cleaner and queries can be run straight to
+download and into live use directly.
+
+* Monthly average data retrievals
+ - product_type :: monthly_averaged_reanalysis_by_hour_of_day
+ - grid :: 0.25/0.25 (nominally)
+ - time :: 00/to/23/by/3 (nominally)
+** surface
+ - dataset :: reanalysis-era5-single-levels-monthly-means
+ - variables
+   vlist = [
+   "sea_ice_cover",
+   "surface_pressure",
+   "total_cloud_cover",
+   "10m_u_component_of_wind",
+   "10m_v_component_of_wind",
+   "skin_temperature",
+   "2m_temperature",
+   "2m_dewpoint_temperature"
+   ]
+
+** levels
+ - dataset :: reanalysis-era5-pressure-levels-monthly-means
+ - levels
+   plevs =  [
+   "1", "2", "3",
+   "5", "7", "10",
+   "20", "30", "50",
+   "70", "100", "125",
+   "150", "175", "200",
+   "225", "250", "300",
+   "350", "400", "450",
+   "500", "550", "600",
+   "650", "700", "750",
+   "775", "800", "825",
+   "850", "875", "900",
+   "925", "950", "975",
+   "1000",
+   ],
+
+ - variables
+   vlist = [ 
+   "fraction_of_cloud_cover", 
+   "ozone_mass_mixing_ratio", 
+   "specific_cloud_ice_water_content",
+   "specific_cloud_liquid_water_content", 
+   "specific_humidity", 
+   "temperature",
+   ]
+
+** rad
+ - dataset :: reanalysis-era5-single-levels-monthly-means
+ - variables
+   vlist = [
+   "mean_top_net_short_wave_radiation_flux_clear_sky",
+   "mean_top_net_long_wave_radiation_flux_clear_sky",
+   "mean_surface_net_short_wave_radiation_flux_clear_sky",
+   "mean_surface_net_long_wave_radiation_flux_clear_sky",
+   "mean_surface_net_short_wave_radiation_flux",
+   "mean_surface_net_long_wave_radiation_flux",
+   "mean_top_net_short_wave_radiation_flux",
+   "mean_top_net_long_wave_radiation_flux"
+   ]

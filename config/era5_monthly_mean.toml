@@ -1,0 +1,66 @@
+title = "era5_monthly_mean (sfc/lev/rad)"
+docstring = "ERA5 monthly mean, full resolution spatial, 3-hourly"
+# Run queries to pull down monthly average ERA5 data for surface,
+# levels, and rad on full spatial grid, every three hours with
+# specified pressure levels (see below)
+
+# See https://cds.climate.copernicus.eu/cdsapp#!/home for details on
+# the Copernicus ERA5/ERA5_monthly datasets
+
+[cds_global]
+product_type = "monthly_averaged_reanalysis_by_hour_of_day"
+grid = "0.25/0.25"
+times = "00/to/23/by/3"
+
+[output]
+format = "netcdf"
+
+# Change basepath to local /asl/models tree 
+basepath = "/Users/steven/Work/asl/models/era5_monthly"
+
+# pull down surface(sfc), levels(lev), and radiative(rad) data
+query_names = ["sfc", "lev", "rad"]
+
+[sfc]
+database = "reanalysis-era5-single-levels-monthly-means"
+vlist = ["sea_ice_cover",
+	     "surface_pressure",
+             "total_cloud_cover",
+	     "10m_u_component_of_wind",
+	     "10m_v_component_of_wind",
+	     "skin_temperature",
+	     "2m_temperature",
+	     "2m_dewpoint_temperature"]
+
+[lev]
+database = "reanalysis-era5-pressure-levels-monthly-means',"
+vlist = ["fraction_of_cloud_cover",
+             "ozone_mass_mixing_ratio",
+	     "specific_cloud_ice_water_content",
+	     "specific_cloud_liquid_water_content",
+	     "specific_humidity",
+	     "temperature"]
+levels =["1", "2", "3",
+         "5", "7", "10",
+	 "20", "30", "50",
+	 "70", "100", "125",
+	 "150", "175", "200",
+	 "225", "250", "300",
+	 "350", "400", "450",
+	 "500", "550", "600",
+	 "650", "700", "750",
+	 "775", "800", "825",
+	 "850", "875", "900",
+	 "925", "950", "975",
+	 "1000"]
+
+[rad]
+database = "reanalysis-era5-single-levels-monthly-means"
+vlist = ["mean_top_net_short_wave_radiation_flux_clear_sky",
+             "mean_top_net_long_wave_radiation_flux_clear_sky",
+	     "mean_surface_net_short_wave_radiation_flux_clear_sky",
+	     "mean_surface_net_long_wave_radiation_flux_clear_sky",
+	     "mean_surface_net_short_wave_radiation_flux",
+	     "mean_surface_net_long_wave_radiation_flux",
+	     "mean_top_net_short_wave_radiation_flux",
+	     "mean_top_net_long_wave_radiation_flux"]
