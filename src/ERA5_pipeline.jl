@@ -4,7 +4,11 @@ import CDSAPI, TOML
 
 export retrieve
 
+"""
+    read_config(config_file::String)::Dict
 
+Read in specified TOML configuration file and format config values in a returned dictionary
+"""
 function read_config(config_file :: String) :: Dict
 
     config = TOML.tryparsefile(config_file)
@@ -21,6 +25,11 @@ function read_config(config_file :: String) :: Dict
     return config
 end
 
+"""
+    build_cdsvars(config::Dict, query::String, year:Integer, month::Integer)
+
+Build the CDSAPI dictionary to drive the required query to retrieve Copernicus data
+"""
 function build_cdsvars(config :: Dict, query :: String, year :: Integer, month :: Integer)
 
     cdsvars = Dict("format" => config["output"]["format"],
@@ -43,6 +52,11 @@ function build_cdsvars(config :: Dict, query :: String, year :: Integer, month :
     return cdsvars, outfilepath
 end
 
+"""
+    retrieve_single(config::Dict, query::String, year::Integer, month::Integer)
+
+Wrapper to build and execute a single CDSAPI retrieval query
+"""
 function retrieve_single(config::Dict, query::String, year::Integer, month::Integer)
 
     cdsvars, outfilepath = build_cdsvars(config, query, year, month)
@@ -51,6 +65,11 @@ function retrieve_single(config::Dict, query::String, year::Integer, month::Inte
 
 end
 
+"""
+    retrieve(config_file::String, year::Integer, month::Integer)
+
+Wrapper to build and execute all CDSAPI retrieval queries defined in the specified configuration file
+"""
 function retrieve(config_file::String, year::Integer, month::Integer)
 
     config = read_config(config_file)
