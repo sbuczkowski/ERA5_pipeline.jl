@@ -21,7 +21,7 @@ function read_config(config_file :: String) :: Dict
     return config
 end
 
-function build_cdsvars(config :: Dict, query :: String, year :: Int, month :: Int)
+function build_cdsvars(config :: Dict, query :: String, year :: Integer, month :: Integer)
 
     cdsvars = Dict("format" => config["output"]["format"],
                    "product_type" => config["cds_global"]["product_type"],
@@ -32,18 +32,33 @@ function build_cdsvars(config :: Dict, query :: String, year :: Int, month :: In
                    "month" => month >= 1 & month <= 12 ? string(month, pad=2) : error("Requested month out of range"))
 
     if query == "lev"
-        merge(cdsvars, Dict("levels" => config["lev"]["levels"]))
+        @info "Merging atmospheric levels into cdsvars"
+        merge!(cdsvars, Dict("levels" => config["lev"]["levels"]))
     end
 
-    return cdsvars
+    # build output file path: config["output"]["basepath"]/year/month/year-month_query.nc
+    filename = string(year) * "-" * string(month,pad=2) * "_" * query * ".nc"
+    outfilepath = joinpath(config["output"]["basepath"],string(year),filename)
+    
+    return cdsvars, outfilepath
 end
 
-function retrieve_single(dataset :: String, cdsvars :: Dict, outfilepath :: String)
+function retrieve_single(config::Dict, query::String, year::Integer, month::Integer)
 
-    CDSAPI.retrieve(dataset, cdsvars, outfilepath)
+    cdsvars, outfilepath = build_cdsvars(config, query, year, month)
+
+    CDSAPI.retrieve(config["$query"]["database"], cdsvars, outfilepath)
 
 end
 
+function retrieve(config_file::String, year::Integer, month::Integer)
+
+    config = read_config(config_file)
+                            
+    # config["output"]["query_names"] drives retrieval behavior
+    foreach(x -> retrieve_single(config, x, year, month), values(config["output"]["query_names"]))
+    
+end
 
 
 end # module ERA5_pipeline

@@ -33,7 +33,7 @@ vlist = ["sea_ice_cover",
 	     "2m_dewpoint_temperature"]
 
 [lev]
-database = "reanalysis-era5-pressure-levels-monthly-means',"
+database = "reanalysis-era5-pressure-levels-monthly-means"
 vlist = ["fraction_of_cloud_cover",
              "ozone_mass_mixing_ratio",
 	     "specific_cloud_ice_water_content",
