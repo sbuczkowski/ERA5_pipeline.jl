@@ -59,6 +59,7 @@ Wrapper to build and execute a single CDSAPI retrieval query
 """
 function retrieve_single(config::Dict, query::String, year::Integer, month::Integer)
 
+    @info "Building and executing query for $query config stanza"
     cdsvars, outfilepath = build_cdsvars(config, query, year, month)
 
     CDSAPI.retrieve(config["$query"]["database"], cdsvars, outfilepath)
@@ -71,7 +72,7 @@ end
 Wrapper to build and execute all CDSAPI retrieval queries defined in the specified configuration file
 """
 function retrieve(config_file::String, year::Integer, month::Integer)
-
+    
     config = read_config(config_file)
                             
     # config["output"]["query_names"] drives retrieval behavior
