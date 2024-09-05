@@ -42,7 +42,7 @@ function build_cdsvars(config :: Dict, query :: String, year :: Integer, month :
 
     if query == "lev"
         @info "Merging atmospheric levels into cdsvars"
-        merge!(cdsvars, Dict("levels" => config["lev"]["levels"]))
+        merge!(cdsvars, Dict("pressure_level" => config["lev"]["levels"]))
     end
 
     # build output file path: config["output"]["basepath"]/year/month/year-month_query.nc
