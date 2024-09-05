@@ -2,7 +2,7 @@ module ERA5_pipeline
 
 import CDSAPI, TOML
 
-export retrieve_single
+export retrieve
 
 
 function read_config(config_file :: String) :: Dict
