@@ -19,7 +19,7 @@ format = "netcdf"
 basepath = "/Users/steven/Work/asl/models/era5_monthly"
 
 # pull down surface(sfc), levels(lev), and radiative(rad) data
-query_names = ["sfc", "lev", "rad"]
+query_names = ["sfc", "rad", "lev"]
 
 [sfc]
 database = "reanalysis-era5-single-levels-monthly-means"
@@ -40,7 +40,7 @@ vlist = ["fraction_of_cloud_cover",
 	     "specific_cloud_liquid_water_content",
 	     "specific_humidity",
 	     "temperature"]
-levels =["1", "2", "3",
+levels = ["1", "2", "3",
          "5", "7", "10",
 	 "20", "30", "50",
 	 "70", "100", "125",
